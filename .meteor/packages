@@ -12,3 +12,6 @@ accounts-password
 ian:accounts-ui-bootstrap-3
 audit-argument-checks
 
+orionjs:core
+fortawesome:fontawesome
+orionjs:bootstrap
