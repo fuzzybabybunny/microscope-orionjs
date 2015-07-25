@@ -2,11 +2,11 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
     - [
       {{author}}
       on {{submittedText}}
     ](#author%0A------on-submittedtext)
+- [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
 - [Purpose](#purpose)
 - [Cloning Microscope](#cloning-microscope)
 - [Download OrionJS](#download-orionjs)
@@ -30,8 +30,6 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Meteor OrionJS with Microscope Tutorial ##
-
-[TOC]
 
 ## Purpose ##
 
