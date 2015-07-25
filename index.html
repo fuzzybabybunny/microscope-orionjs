@@ -1,73 +1,682 @@
 
-<!DOCTYPE html>
-<html>
+<h2 id="meteor-orionjs-with-microscope-tutorial">Meteor OrionJS with Microscope Tutorial</h2>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Microscope-orionjs-tutorial : ">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Microscope-orionjs-tutorial</title>
-  </head>
+<h2 id="purpose">Purpose</h2>
 
-  <body>
+<p>I haven’t been able to find a good tutorial that goes through the end-to-end setup for OrionJS, so I decided to create this tutorial both as a learning resource for others but also as a way for me to keep track of my own progress as I poke around OrionJS and figure out how to do stuff with it.</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/fuzzybabybunny/microscope-orionjs">View on GitHub</a>
+<p>There will be cursing in this tutorial.</p>
 
-          <h1 id="project_title">Microscope-orionjs-tutorial</h1>
-          <h2 id="project_tagline"></h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/fuzzybabybunny/microscope-orionjs/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/fuzzybabybunny/microscope-orionjs/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<h2 id="cloning-microscope">Cloning Microscope</h2>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here <a href="https://guides.github.com/features/mastering-markdown/">using GitHub Flavored Markdown</a>, select a template crafted by a designer, and publish. After your page is generated, you can check out the new <code>gh-pages</code> branch locally. If you’re using GitHub for Mac or GitHub for Windows, simply sync your repository and you’ll see the new branch.</p>
+<p>Most Meteor developers should be familiar with Microscope, the social news app which the user codes along with when following the <a href="https://www.discovermeteor.com/">Discover Meteor</a> tutorial book. If you haven’t read and coded along with this book, do it. Now.</p>
 
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<p>As of this writing, Microscope does not have a backend admin system in place to manage its data, so I thought that it would be the ideal candidate for creating a tutorial on how to get OrionJS working.</p>
 
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
+<p>First, go to <a href="https://github.com/DiscoverMeteor/Microscope">https://github.com/DiscoverMeteor/Microscope</a> and clone the repo.</p>
 
-<h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating pages manually</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
 
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<pre class="prettyprint"><code class=" hljs avrasm">git clone git@github<span class="hljs-preprocessor">.com</span>:DiscoverMeteor/Microscope<span class="hljs-preprocessor">.git</span>
+cd Microscope
+meteor update</code></pre>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
+<h2 id="download-orionjs">Download OrionJS</h2>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Microscope-orionjs-tutorial maintained by <a href="https://github.com/fuzzybabybunny">fuzzybabybunny</a></p>
-        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+<p>OrionJS is designed to work nicely with Bootstrap, which is perfect because Microscope does as well.</p>
 
-    
 
-  </body>
-</html>
+
+<pre class="prettyprint"><code class=" hljs css"><span class="hljs-tag">meteor</span> <span class="hljs-tag">add</span> <span class="hljs-tag">orionjs</span><span class="hljs-pseudo">:core</span> <span class="hljs-tag">fortawesome</span><span class="hljs-pseudo">:fontawesome</span> <span class="hljs-tag">orionjs</span><span class="hljs-pseudo">:bootstrap</span></code></pre>
+
+<p>When you do <code>meteor list</code> you should see (versions may be different):</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs lasso">
+accounts<span class="hljs-attribute">-password</span>            <span class="hljs-number">1.1</span><span class="hljs-number">.1</span>  Password support for accounts
+audit<span class="hljs-attribute">-argument</span><span class="hljs-attribute">-checks</span>        <span class="hljs-number">1.0</span><span class="hljs-number">.3</span>  Try <span class="hljs-keyword">to</span> detect inadequate input sanitization
+fortawesome:fontawesome      <span class="hljs-number">4.3</span><span class="hljs-number">.0</span>  Font Awesome (official): <span class="hljs-number">500</span><span class="hljs-subst">+</span> scalable vector icons, customizable via CSS, Retina friendly
+ian:accounts<span class="hljs-attribute">-ui</span><span class="hljs-attribute">-bootstrap</span><span class="hljs-subst">-</span><span class="hljs-number">3</span>  <span class="hljs-number">1.2</span><span class="hljs-number">.76</span>  Bootstrap<span class="hljs-attribute">-styled</span> accounts<span class="hljs-attribute">-ui</span> <span class="hljs-keyword">with</span> multi<span class="hljs-attribute">-language</span> support<span class="hljs-built_in">.</span>
+iron:router                  <span class="hljs-number">1.0</span><span class="hljs-number">.9</span>  Routing specifically designed for Meteor
+orionjs:bootstrap            <span class="hljs-number">1.2</span><span class="hljs-number">.1</span>  A simple theme for orion
+orionjs:core                 <span class="hljs-number">1.2</span><span class="hljs-number">.0</span>  Orion
+sacha:spin                   <span class="hljs-number">2.3</span><span class="hljs-number">.1</span>  Simple spinner package for Meteor
+standard<span class="hljs-attribute">-app</span><span class="hljs-attribute">-packages</span>        <span class="hljs-number">1.0</span><span class="hljs-number">.5</span>  Moved <span class="hljs-keyword">to</span> meteor<span class="hljs-attribute">-platform</span>
+twbs:bootstrap               <span class="hljs-number">3.3</span><span class="hljs-number">.5</span>  The most popular front<span class="hljs-attribute">-end</span> framework for developing responsive, mobile first projects <span class="hljs-keyword">on</span> the web<span class="hljs-built_in">.</span>
+underscore                   <span class="hljs-number">1.0</span><span class="hljs-number">.3</span>  Collection of small helpers: _<span class="hljs-built_in">.</span><span class="hljs-built_in">map</span>, _<span class="hljs-built_in">.</span>each, <span class="hljs-attribute">...</span>
+</code></pre>
+
+
+
+<h2 id="initial-impressions">Initial Impressions</h2>
+
+<p>Great! Now that we’ve added all these packages, let’s start up Microscope and see how fucked up we made everything.</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs ">meteor</code></pre>
+
+<p>Then point your browser to <code>http://localhost:3000/</code></p>
+
+<p>Everything looks like it should:</p>
+
+<p><img src="https://lh3.googleusercontent.com/ADsFjG6v1AlTMaULUSVMG9qEBKrCQ902sUXuQI5N1dU=s0" alt="enter image description here" title="Screenshot from 2015-07-23 22:54:16.png"></p>
+
+<p>Now let’s go to <code>http://localhost:3000/admin</code></p>
+
+<p><img src="https://lh3.googleusercontent.com/yjUHPNxc1wclW3M-pPFIk1J_F8IglciV8NU85nIwNE0=s0" alt="enter image description here" title="Screenshot from 2015-07-23 22:56:17.png"></p>
+
+<p>Looks like shit.</p>
+
+<p>The reason this is here is because there’s a hidden red alert box that is floating right. It’s a style that was defined in Microscope so let’s go remove it. Comment out that line of code.</p>
+
+
+
+<pre class="prettyprint"><code class="language-css hljs ">/<span class="hljs-tag">client</span>/<span class="hljs-tag">stylesheets</span>/<span class="hljs-tag">style</span><span class="hljs-class">.css</span>
+
+<span class="hljs-class">.alert</span> <span class="hljs-rules">{
+          <span class="hljs-rule"><span class="hljs-attribute">animation</span>:<span class="hljs-value"> fadeOut <span class="hljs-number">2700</span>ms ease-in <span class="hljs-number">0</span>s <span class="hljs-number">1</span> forwards</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">-webkit-animation</span>:<span class="hljs-value"> fadeOut <span class="hljs-number">2700</span>ms ease-in <span class="hljs-number">0</span>s <span class="hljs-number">1</span> forwards</span></span>;
+     <span class="hljs-rule"><span class="hljs-attribute">-moz-animation</span>:<span class="hljs-value"> fadeOut <span class="hljs-number">2700</span>ms ease-in <span class="hljs-number">0</span>s <span class="hljs-number">1</span> forwards</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">width</span>:<span class="hljs-value"> <span class="hljs-number">250</span>px</span></span>;
+<span class="hljs-comment">/*  float: right;*/</span>
+  <span class="hljs-rule"><span class="hljs-attribute">clear</span>:<span class="hljs-value"> both</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">margin-bottom</span>:<span class="hljs-value"> <span class="hljs-number">5</span>px</span></span>;
+  <span class="hljs-rule"><span class="hljs-attribute">pointer-events</span>:<span class="hljs-value"> auto</span></span>;
+<span class="hljs-rule">}</span></span></code></pre>
+
+<p>This is going to make Microscope look crappier but I’m shit at CSS so fuckit.</p>
+
+<p><img src="https://lh3.googleusercontent.com/UwazTdhYJp0Rx_aYIbwJp52UOQbhLPfv5VvqrZJH8jo=s0" alt="enter image description here" title="Screenshot from 2015-07-23 23:10:09.png"></p>
+
+<p>Better. The invisible alert box is still taking up space but I can’t be fucked to do anything about it.</p>
+
+
+
+<h2 id="creating-users">Creating Users</h2>
+
+<p>Looks like we need to create users and log in first before we can see the OrionJS backend. </p>
+
+<p>Go here and replace the original <code>// create two users</code> code with this:</p>
+
+<p>(Don’t just copy this code and replace everything in <code>fixtures.js</code> with this since it’s just partial code.)</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/server/fixtures.js
+
+<span class="hljs-comment">// Fixture data </span>
+<span class="hljs-keyword">if</span> (Posts.find().count() === <span class="hljs-number">0</span>) {
+  <span class="hljs-keyword">var</span> now = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
+
+  <span class="hljs-comment">// create two users</span>
+
+  <span class="hljs-keyword">var</span> sachaId = Accounts.createUser({
+    profile: {
+      name: <span class="hljs-string">'Sacha Greif'</span>
+    },
+    username: <span class="hljs-string">"sacha"</span>,
+    email: <span class="hljs-string">"sacha@example.com"</span>,
+    password: <span class="hljs-string">"123456"</span>,
+  });
+
+  <span class="hljs-keyword">var</span> tomId = Accounts.createUser({
+    profile: {
+      name: <span class="hljs-string">'Tom Coleman'</span>
+    },
+    username: <span class="hljs-string">"tom"</span>,
+    email: <span class="hljs-string">"tom@example.com"</span>,
+    password: <span class="hljs-string">"123456"</span>,
+  });
+
+  <span class="hljs-keyword">var</span> sacha = Meteor.users.findOne(sachaId);
+  <span class="hljs-keyword">var</span> tom = Meteor.users.findOne(tomId);
+
+  <span class="hljs-keyword">var</span> telescopeId = Posts.insert({
+    title: <span class="hljs-string">'Introducing Telescope'</span>,
+    userId: sacha._id,
+    author: sacha.profile.name,
+    url: <span class="hljs-string">'http://sachagreif.com/introducing-telescope/'</span>,
+    submitted: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(now - <span class="hljs-number">7</span> * <span class="hljs-number">3600</span> * <span class="hljs-number">1000</span>),
+    commentsCount: <span class="hljs-number">2</span>,
+    upvoters: [], votes: <span class="hljs-number">0</span>
+  });
+
+  Comments.insert({
+    postId: telescopeId,
+    userId: tom._id,
+    author: tom.profile.name,
+    submitted: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(now - <span class="hljs-number">5</span> * <span class="hljs-number">3600</span> * <span class="hljs-number">1000</span>),
+    body: <span class="hljs-string">'Interesting project Sacha, can I get involved?'</span>
+  });
+</code></pre>
+
+<p>Shut down Meteor with <code>Ctrl+C</code> and do a <code>meteor reset</code> and start it back up again with <code>meteor</code>.</p>
+
+<p>Now let’s log in <strong>as Sacha</strong> and see what happens. Once logged in, click on the <code>Accounts</code> link on the left.</p>
+
+<p><img src="https://lh3.googleusercontent.com/J5K9jjcJU_0KKQVfBcqfXiUNrqcto6slnUyOZ6O1Lks=s0" alt="enter image description here" title="Screenshot from 2015-07-23 23:41:12.png"></p>
+
+<ul>
+<li><p>Nice. Absolutely nothing shows up except the <code>Accounts</code> collection. Microscope has a <code>Posts</code> collection as well as a <code>Comments</code> collection.</p></li>
+<li><p>… and WTF. Tom is an <code>admin</code> but Sacha is not. We didn’t even tell Meteor to make Tom an <code>admin</code> in my fixtures code, so what the hell happened?</p></li>
+</ul>
+
+<p>It turns out that by default, OrionJS will create a user <code>Role</code> called <code>admin</code> and if there is no <code>admin</code>,  will assign the <strong>first</strong> user created with <code>Accounts.createUser</code> as an <code>admin</code>. Remember this so you’re not creating accidental admin users in your fixtures code.</p>
+
+<p>I can’t spell Sasha’s name for shit so let’s remove him as admin and have Tom as admin. Because ignoring your spelling weaknesses make them go away.</p>
+
+
+
+<h2 id="adding-and-removing-roles-from-users">Adding and Removing Roles from Users</h2>
+
+<p>Unlike other user roles packages, the <code>role</code> of the user in <code>OrionJS</code> isn’t stored on the <code>user</code> object itself. You won’t find something like:</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">{
+  username: <span class="hljs-string">'cletus'</span>,
+  email: <span class="hljs-string">'ileik@mysister.com'</span>,
+  roles: [
+    <span class="hljs-string">'admin'</span>,
+    <span class="hljs-string">'parent'</span>,
+    <span class="hljs-string">'varmit_hunter'</span>
+  ]
+}</code></pre>
+
+<p>Instead, each separate <code>role</code> is stored in a <code>Roles</code> collection and the <code>userId</code> of the user is referenced along with an array containing their <code>roles</code>.</p>
+
+
+
+<h3 id="getting-roles">Getting Roles</h3>
+
+<p>Let’s fuck around in the Chrome console before we do anything. While in the <code>Accounts</code> admin page, do:</p>
+
+
+
+<pre class="prettyprint"><code class="language-console hljs objectivec">var <span class="hljs-keyword">id</span> = Meteor<span class="hljs-variable">.users</span><span class="hljs-variable">.findOne</span>({username: <span class="hljs-string">"sacha"</span>})<span class="hljs-variable">._id</span>;
+Roles<span class="hljs-variable">.userHasRole</span>(<span class="hljs-keyword">id</span>, <span class="hljs-string">"admin"</span>)
+
+<span class="hljs-literal">true</span></code></pre>
+
+<p>It should return <code>true</code>. We got Sesha’s userId and then used that ID to check if he has the role of “admin.”</p>
+
+<p>Likewise, each user has a <code>roles()</code> and <code>hasRole()</code> method on its object:</p>
+
+
+
+<pre class="prettyprint"><code class="language-console hljs avrasm">// gets the currently logged <span class="hljs-keyword">in</span> user, which should be Sassha
+var user = Meteor<span class="hljs-preprocessor">.user</span>()<span class="hljs-comment">;</span>
+user<span class="hljs-preprocessor">.roles</span>()<span class="hljs-comment">;</span>
+
+[<span class="hljs-string">"admin"</span>]
+
+user<span class="hljs-preprocessor">.hasRole</span>(<span class="hljs-string">"admin"</span>)
+
+true</code></pre>
+
+<p>So that’s how you check if a user has a role you want.</p>
+
+<p>Currently there doesn’t seem to be a method to check <em>which</em> users have a certain role.</p>
+
+
+
+<h3 id="setting-roles">Setting Roles</h3>
+
+<p>We need to give Tom the role of <code>admin</code>.</p>
+
+<p>In Chrome console:</p>
+
+
+
+<pre class="prettyprint"><code class=" hljs avrasm">var user = Meteor<span class="hljs-preprocessor">.users</span><span class="hljs-preprocessor">.findOne</span>({username: <span class="hljs-string">"tom"</span>})<span class="hljs-comment">;</span>
+Roles<span class="hljs-preprocessor">.addUserToRoles</span>( user._id ,  [<span class="hljs-string">"admin"</span>] )<span class="hljs-comment">;</span>
+
+<span class="hljs-label">VM11445:</span><span class="hljs-number">2</span> Uncaught TypeError: Roles<span class="hljs-preprocessor">.addUserToRoles</span> is not a function(anonymous function)</code></pre>
+
+<p>DUH. You can’t define roles on the client. Because that’s dumb.</p>
+
+<p>Let’s make a new file called <code>/server/admin.js</code></p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/server/admin.js
+
+<span class="hljs-keyword">var</span> tom = Meteor.users.findOne({username: <span class="hljs-string">'tom'</span>});
+Roles.addUserToRoles( tom._id ,  [<span class="hljs-string">"admin"</span>] );</code></pre>
+
+<p>If we go back to the OrionJS admin console we should see that now Tom and Sache are both admins. </p>
+
+<p>Now we want to remove Sachet as an admin.</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/server/admin.js
+
+<span class="hljs-keyword">var</span> tom = Meteor.users.findOne({username: <span class="hljs-string">'tom'</span>});
+Roles.addUserToRoles( tom._id ,  [<span class="hljs-string">"admin"</span>] );
+
+<span class="hljs-keyword">var</span> nameIcantSpel = Meteor.users.findOne({username: <span class="hljs-string">'sacha'</span>});
+Roles.removeUserFromRoles( nameIcantSpel._id, [<span class="hljs-string">"admin"</span>] );</code></pre>
+
+<p>You’ll notice that you can log into <code>OrionJS</code> as Sacsh, but you won’t see <code>Accounts</code> on the sidebar since he’s no longer an <code>admin</code>. So log in as Tom instead.</p>
+
+<p>And now Tom is the only admin! </p>
+
+<p><img src="https://lh3.googleusercontent.com/2cXRDE9AILHEWVhLumU2Fei-Tzf67Uwl8rOCZGfcsOk=s0" alt="enter image description here" title="Screenshot from 2015-07-24 00:26:13.png"></p>
+
+<p>Spelling weakness successfully ignored!</p>
+
+
+
+<h2 id="adding-collections-to-orionjs">Adding Collections to OrionJS</h2>
+
+<p>Here’s where this tutorial gets less horrible.</p>
+
+<p>Microscope has a <code>Posts</code> and <code>Comments</code> collection, but both aren’t visible yet in the admin thingy. That’s because they’re not <code>Orion</code> collections yet.</p>
+
+<p>Let’s make them appear.</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs "><span class="hljs-comment">// This is what it used to be:</span>
+<span class="hljs-comment">// Posts = new Mongo.Collection('posts');</span>
+
+<span class="hljs-comment">// Instead let's do:</span>
+Posts = <span class="hljs-keyword">new</span> orion.collection(<span class="hljs-string">'posts'</span>, {
+  singularName: <span class="hljs-string">'post'</span>, <span class="hljs-comment">// The name of one of these items</span>
+  pluralName: <span class="hljs-string">'posts'</span>, <span class="hljs-comment">// The name of more than one of these items</span>
+  link: {
+    <span class="hljs-comment">// *</span>
+    <span class="hljs-comment">//  * The text that you want to show in the sidebar.</span>
+    <span class="hljs-comment">//  * The default value is the name of the collection, so</span>
+    <span class="hljs-comment">//  * in this case it is not necessary.</span>
+
+    title: <span class="hljs-string">'Posts'</span> 
+  },
+  <span class="hljs-comment">/**
+   * Tabular settings for this collection
+   */</span>
+  tabular: {
+    <span class="hljs-comment">// here we set which data columns we want to appear on the data table</span>
+    <span class="hljs-comment">// in the CMS panel</span>
+    columns: [
+      { 
+        data: <span class="hljs-string">"title"</span>, 
+        title: <span class="hljs-string">"Title"</span> 
+      },{ 
+        data: <span class="hljs-string">"author"</span>, 
+        title: <span class="hljs-string">"Author"</span> 
+      },{ 
+        data: <span class="hljs-string">"submitted"</span>, 
+        title: <span class="hljs-string">"Submitted"</span> 
+      },
+    ]
+  }
+});
+
+Posts.allow({
+  update: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(userId, post)</span> {</span> <span class="hljs-keyword">return</span> ownsDocument(userId, post); },
+  remove: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(userId, post)</span> {</span> <span class="hljs-keyword">return</span> ownsDocument(userId, post); },
+});
+
+Posts.deny({
+  update: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(userId, post, fieldNames)</span> {</span>
+    <span class="hljs-comment">// may only edit the following two fields:</span></code></pre>
+
+<p>If you go back to the Microscope home page you’ll see that everything appears to have remained normal. Orion collections are just extended Mongo collections. </p>
+
+<p>Now it looks like we got <code>Posts</code> appearing in <code>OrionJS</code>.</p>
+
+<p><img src="https://lh3.googleusercontent.com/6T99yNvDLm2qxDp-ZLF8W0V9L64Op8W8-UAvuOQlEqo=s0" alt="enter image description here" title="Screenshot from 2015-07-24 00:37:51.png"></p>
+
+<p>Reactive search works. Sorting columns is working. Pagination is working.</p>
+
+<p>But when we click on a table item we get:</p>
+
+<p><img src="https://lh3.googleusercontent.com/UPlVwdKLDXf2UBsX3JqLdTpoG989DelOau61HHB84MA=s0" alt="enter image description here" title="Screenshot from 2015-07-24 00:39:06.png"></p>
+
+<p>Errors and shit.</p>
+
+<p>Luckily the error is pretty descriptive. This form needs either a schema or a collection.</p>
+
+
+
+<h2 id="updating-collection-documents">Updating Collection Documents</h2>
+
+<p>When we click on one of the table items we expect to go to an update form for that particular item. <code>OrionJS</code> uses the vastly powerful <code>aldeed:autoform</code> package to generate its forms. <code>aldeed:autoform</code> in turn uses the <code>aldeed:simple-schema</code> package to know <em>how</em> to generate its forms. </p>
+
+
+
+<h3 id="schemas">Schemas</h3>
+
+<p>Schemas are these little (tee-hee) things that define how the data in your database should be. If you’ve got a <code>User</code> document with a <code>first_name</code> property, you’d expect the value to be a <code>type: String</code>. If having a first name is critical, you’d want it to be <code>optional: false</code>. </p>
+
+<p>We use schemas to keep our data consistent. MongoDB is inherently a schema-less database. It would happily allow you to fuck yourself over by storing an array of booleans inside the <code>first_name</code> property of your <code>user</code> document, for instance. And then you go to access it and your wife leaves you (probably not your husband because he’s clueless).</p>
+
+<p>So this is why people decided to make a schema package for Meteor. They love you and want happy families.</p>
+
+<p>Let’s start by defining a schema for our <code>Posts</code> collection all the way at the very bottom of <code>/lib/collections/posts.js</code>. I’m too lazy to type so read the comments.</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/lib/collections/posts.js
+
+<span class="hljs-comment">// Rest of the code above</span>
+
+      $addToSet: {upvoters: <span class="hljs-keyword">this</span>.userId},
+      $inc: {votes: <span class="hljs-number">1</span>}
+    });
+
+    <span class="hljs-keyword">if</span> (! affected)
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Meteor.Error(<span class="hljs-string">'invalid'</span>, <span class="hljs-string">"You weren't able to upvote that post"</span>);
+  }
+});
+
+<span class="hljs-comment">/**
+ * Now we will define and attach the schema for this collection.
+ * Orion will automatically create the corresponding form.
+ */</span>
+Posts.attachSchema(<span class="hljs-keyword">new</span> SimpleSchema({
+  <span class="hljs-comment">// We use `label` to put a custom label for this form field</span>
+  <span class="hljs-comment">// Otherwise it would default to `Title`</span>
+  <span class="hljs-comment">// 'optional: false' means that this field is required</span>
+  <span class="hljs-comment">// If it's blank, the form won't submit and you'll get a red error message</span>
+  <span class="hljs-comment">// 'type' is where you can set the expected data type for the 'title' key's value</span>
+  title: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'Post Title'</span>
+  },
+  <span class="hljs-comment">// regEx will validate this form field according to a RegEx for a URL</span>
+  url: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'URL'</span>,
+    regEx: SimpleSchema.RegEx.Url
+  },
+  <span class="hljs-comment">// autoform determines other aspects for how the form is generated</span>
+  <span class="hljs-comment">// In this case we're making this field hidden from view</span>
+  userId: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    autoform: {
+      type: <span class="hljs-string">"hidden"</span>,
+      label: <span class="hljs-literal">false</span>
+    },
+  },
+  author: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  <span class="hljs-comment">// 'type: Date' means that this field is expecting a data as an entry</span>
+  submitted: {
+    type: <span class="hljs-built_in">Date</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  commentsCount: {
+    type: <span class="hljs-built_in">Number</span>,
+    optional: <span class="hljs-literal">false</span>
+  },
+  <span class="hljs-comment">// 'type: [String]' means this key's value is an array of strings'</span>
+  upvoters: {
+    type: [<span class="hljs-built_in">String</span>],
+    optional: <span class="hljs-literal">true</span>,
+    autoform: {
+      disabled: <span class="hljs-literal">true</span>,
+      label: <span class="hljs-literal">false</span>
+    },
+  },
+  votes: {
+    type: <span class="hljs-built_in">Number</span>,
+    optional: <span class="hljs-literal">true</span>
+  },
+}));</code></pre>
+
+<p>I told you schemas are little, right?</p>
+
+<p>Save and try clicking on a post item again.</p>
+
+<p><img src="https://lh3.googleusercontent.com/xUKRDnSsT3THV3fi-HocLdl3uAwkTyt_YRC_nswc8eA=s0" alt="enter image description here" title="Screenshot from 2015-07-24 03:57:39.png"></p>
+
+<p>Ohhhhh… shit! It’s almost like I… planned… things.</p>
+
+<p>Play around with this form and look at how the <code>schema</code> we defined directly correlates to how this form was generated.</p>
+
+<ul>
+<li>make the <code>Post Title</code> blank and save the form</li>
+<li>remove <code>http</code> in <code>URL</code> and save the form</li>
+<li>click on the <code>Submitted</code> field to see how <code>type: Date</code> works</li>
+</ul>
+
+
+
+<h2 id="adding-comments-collection">Adding Comments Collection</h2>
+
+<p>How about we do the same thing to the <code>Comments</code> collection as we did to the <code>Posts</code> collection?</p>
+
+<p>I’ll race you. Ready? Go. <br>
+Done I WIN.</p>
+
+
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/lib/collections/comments.js
+
+Comments = <span class="hljs-keyword">new</span> orion.collection(<span class="hljs-string">'comments'</span>, {
+  singularName: <span class="hljs-string">'comment'</span>, <span class="hljs-comment">// The name of one of these items</span>
+  pluralName: <span class="hljs-string">'comments'</span>, <span class="hljs-comment">// The name of more than one of these items</span>
+  link: {
+    <span class="hljs-comment">// *</span>
+    <span class="hljs-comment">//  * The text that you want to show in the sidebar.</span>
+    <span class="hljs-comment">//  * The default value is the name of the collection, so</span>
+    <span class="hljs-comment">//  * in this case it is not necessary.</span>
+
+    title: <span class="hljs-string">'Comments'</span> 
+  },
+  <span class="hljs-comment">/**
+   * Tabular settings for this collection
+   */</span>
+  tabular: {
+    <span class="hljs-comment">// here we set which data columns we want to appear on the data table</span>
+    <span class="hljs-comment">// in the CMS panel</span>
+    columns: [
+      { 
+        data: <span class="hljs-string">"author"</span>, 
+        title: <span class="hljs-string">"Author"</span> 
+      },{ 
+        data: <span class="hljs-string">"postId"</span>, 
+        title: <span class="hljs-string">"Post ID"</span> 
+      },{ 
+        data: <span class="hljs-string">"submitted"</span>, 
+        title: <span class="hljs-string">"Submitted"</span> 
+      },
+    ]
+  }
+});
+
+Meteor.methods({
+  commentInsert: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(commentAttributes)</span> {</span>
+    check(<span class="hljs-keyword">this</span>.userId, <span class="hljs-built_in">String</span>);
+    check(commentAttributes, {
+      postId: <span class="hljs-built_in">String</span>,
+      body: <span class="hljs-built_in">String</span>
+    });
+
+    <span class="hljs-keyword">var</span> user = Meteor.user();
+    <span class="hljs-keyword">var</span> post = Posts.findOne(commentAttributes.postId);
+
+    <span class="hljs-keyword">if</span> (!post)
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Meteor.Error(<span class="hljs-string">'invalid-comment'</span>, <span class="hljs-string">'You must comment on a post'</span>);
+
+    comment = _.extend(commentAttributes, {
+      userId: user._id,
+      author: user.username,
+      submitted: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>()
+    });
+
+    <span class="hljs-comment">// update the post with the number of comments</span>
+    Posts.update(comment.postId, {$inc: {commentsCount: <span class="hljs-number">1</span>}});
+
+    <span class="hljs-comment">// create the comment, save the id</span>
+    comment._id = Comments.insert(comment);
+
+    <span class="hljs-comment">// now create a notification, informing the user that there's been a comment</span>
+    createCommentNotification(comment);
+
+    <span class="hljs-keyword">return</span> comment._id;
+  }
+});
+
+<span class="hljs-comment">/**
+ * Now we will define and attach the schema for that collection.
+ * Orion will automatically create the corresponding form.
+ */</span>
+Comments.attachSchema(<span class="hljs-keyword">new</span> SimpleSchema({
+  postId: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'Post ID'</span>
+  },
+  userId: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'User ID'</span>,
+  },
+  author: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  submitted: {
+    type: <span class="hljs-built_in">Date</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  body: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+  }
+}));</code></pre>
+
+<p><img src="https://lh3.googleusercontent.com/LROiQg6mMP5rpG844QNv-njdxyB5ltffUASPpbx606M=s0" alt="enter image description here" title="Screenshot from 2015-07-24 04:33:38.png"></p>
+
+<p><img src="https://lh3.googleusercontent.com/89A5cA83MF5WZn-69hoq2yqPvh5hvllTXyTpuQMuJJU=s0" alt="enter image description here" title="Screenshot from 2015-07-24 04:34:43.png"></p>
+
+<p>How about we do something even more CRAZY and add in a text editor for the <code>Body</code> field?</p>
+
+
+
+<h2 id="custom-input-types-widgets">Custom Input Types (Widgets)</h2>
+
+<p>First, some background.</p>
+
+<p>Forms have standard input types. Checkboxes. Radio buttons. Text. These are all supported out of the box by <code>aldeed:autoform</code>. But things like text editors (with buttons for selecting font type, size, color, etc) are custom, and <code>autoform</code> gives us a way to define our own widgets in the <code>schema</code> so that autoform can generate that form for us.</p>
+
+
+
+<h3 id="adding-summernote">Adding Summernote</h3>
+
+<p>First do <code>meteor add orionjs:summernote</code></p>
+
+<p>Now do this to the <code>body</code> property:</p>
+
+<pre class="prettyprint"><code class="language-javascript hljs ">/lib/collections/comments.js
+
+    <span class="hljs-comment">// now create a notification, informing the user that there's been a comment</span>
+    createCommentNotification(comment);
+
+    <span class="hljs-keyword">return</span> comment._id;
+  }
+});
+
+<span class="hljs-comment">/**
+ * Now we will attach the schema for that collection.
+ * Orion will automatically create the corresponding form.
+ */</span>
+Comments.attachSchema(<span class="hljs-keyword">new</span> SimpleSchema({
+  postId: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'Post ID'</span>
+  },
+  userId: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+    label: <span class="hljs-string">'User ID'</span>,
+  },
+  author: {
+    type: <span class="hljs-built_in">String</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  submitted: {
+    type: <span class="hljs-built_in">Date</span>,
+    optional: <span class="hljs-literal">false</span>,
+  },
+  body: orion.attribute(<span class="hljs-string">'summernote'</span>, {
+    label: <span class="hljs-string">'Body'</span>
+  }),
+}));</code></pre>
+
+<p>Click on the comment by Sashi in the OrionJS admin panel to see what’s up.</p>
+
+<p><img src="https://lh3.googleusercontent.com/unDs4gjPq22hcncc11LY_Cp9eTD5RBh9G6IChwiVMYo=s0" alt="enter image description here" title="Screenshot from 2015-07-24 18:30:25.png"></p>
+
+<p>Niiiice.</p>
+
+<h3 id="orion-attributes">Orion Attributes</h3>
+
+<p>So what the hell is the <code>orion.attribute</code> we adding as the value for the <code>body</code> key in our schema? How about we just use our Chrome Console? </p>
+
+<pre class="prettyprint"><code class=" hljs r">orion.attribute(<span class="hljs-string">'summernote'</span>, {
+  label: <span class="hljs-string">'Body'</span>
+})
+
+Object {label: <span class="hljs-string">"Body"</span>, type: <span class="hljs-keyword">function</span>, orionAttribute: <span class="hljs-string">"summernote"</span>, <span class="hljs-keyword">...</span>}
+autoform: Object
+label: <span class="hljs-string">"Body"</span>
+orionAttribute: <span class="hljs-string">"summernote"</span>
+type: <span class="hljs-keyword">function</span> String() { [native code] }
+__proto__: Object</code></pre>
+
+<p>Oh. looks like by adding the <code>orionjs:summernote</code> package we got access to this method that returns a pre-made object for us that we can conveniently use in our schema. Remember that <code>aldeed:autoform</code> uses the schema to figure out <em>how</em> to generate form items, so this attribute did all the defining-the-input-widget stuff for us.</p>
+
+<p>I’m going to make this comment fabulous. ROYGBIV and Comic Sans the shit out of that comment, Sechie.</p>
+
+<p><img src="https://lh3.googleusercontent.com/eVMz0FVebRmy05ZPPU9p3b_91o56QjbK7GfgK0mIvaA=s0" alt="enter image description here" title="Screenshot from 2015-07-24 18:37:15.png"></p>
+
+<p>Save it.</p>
+
+<p>Remember that this comment is now in HTML, so we have to add triple spacebars <code>{{{ TRIPLEX #vindiesel }}}</code> in our <code>comment_item.html</code> to make sure Spacebars will render the HTML properly.</p>
+
+<pre class="prettyprint"><code class="language-html hljs ">/client/templates/comments/comment_item.html
+
+<span class="hljs-tag">&lt;<span class="hljs-title">template</span> <span class="hljs-attribute">name</span>=<span class="hljs-value">"commentItem"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">li</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">h4</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"author"</span>&gt;</span>{{author}}<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-title">span</span> <span class="hljs-attribute">class</span>=<span class="hljs-value">"date"</span>&gt;</span>on {{submittedText}}<span class="hljs-tag">&lt;/<span class="hljs-title">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">h4</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">p</span>&gt;</span>{{{ body }}}<span class="hljs-tag">&lt;/<span class="hljs-title">p</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">li</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">template</span>&gt;</span></code></pre>
+
+<p>Let’s survey the improvements by going to the main page and clicking on the comments for the <code>Introducing Telescope</code> post.</p>
+
+<p><img src="https://lh3.googleusercontent.com/8ja1upLimMWalVzUCAMWNmtULEb-xpvPzOiih5l99wg=s0" alt="enter image description here" title="Screenshot from 2015-07-24 18:46:03.png"></p>
+
+<p>Beauty. </p>
+
+<h3 id="adding-images-none">Adding Images (none)</h3>
+
+
+
+<h2 id="custom-tabular-values">Custom Tabular Values</h2>
+
+<h2 id="relationships-none">Relationships (none)</h2>
+
+<h2 id="custom-functions-none">Custom Functions (none)</h2>
