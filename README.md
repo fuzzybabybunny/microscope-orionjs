@@ -1,3 +1,34 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
+    - [
+      {{author}}
+      on {{submittedText}}
+    ](#author%0A------on-submittedtext)
+- [Purpose](#purpose)
+- [Cloning Microscope](#cloning-microscope)
+- [Download OrionJS](#download-orionjs)
+- [Initial Impressions](#initial-impressions)
+- [Creating Users](#creating-users)
+- [Adding and Removing Roles from Users](#adding-and-removing-roles-from-users)
+  - [Getting Roles](#getting-roles)
+  - [Setting Roles](#setting-roles)
+- [Adding Collections to OrionJS](#adding-collections-to-orionjs)
+- [Updating Collection Documents](#updating-collection-documents)
+  - [Schemas](#schemas)
+- [Adding Comments Collection](#adding-comments-collection)
+- [Custom Input Types (Widgets)](#custom-input-types-widgets)
+  - [Adding Summernote](#adding-summernote)
+  - [Orion Attributes](#orion-attributes)
+  - [Adding Images (none)](#adding-images-none)
+- [Custom Tabular Values](#custom-tabular-values)
+- [Relationships (none)](#relationships-none)
+- [Custom Functions (none)](#custom-functions-none)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Meteor OrionJS with Microscope Tutorial ##
 
 [TOC]
