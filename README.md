@@ -2,34 +2,36 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-    - [
+- [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
+      - [
       {{author}}
       on {{submittedText}}
     ](#author%0A------on-submittedtext)
-- [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
-- [Purpose](#purpose)
-- [Cloning Microscope](#cloning-microscope)
-- [Download OrionJS](#download-orionjs)
-- [Initial Impressions](#initial-impressions)
-- [Creating Users](#creating-users)
-- [Adding and Removing Roles from Users](#adding-and-removing-roles-from-users)
-  - [Getting Roles](#getting-roles)
-  - [Setting Roles](#setting-roles)
-- [Adding Collections to OrionJS](#adding-collections-to-orionjs)
-- [Updating Collection Documents](#updating-collection-documents)
-  - [Schemas](#schemas)
-- [Adding Comments Collection](#adding-comments-collection)
-- [Custom Input Types (Widgets)](#custom-input-types-widgets)
-  - [Adding Summernote](#adding-summernote)
-  - [Orion Attributes](#orion-attributes)
-  - [Adding Images (none)](#adding-images-none)
-- [Custom Tabular Values](#custom-tabular-values)
-- [Relationships (none)](#relationships-none)
-- [Custom Functions (none)](#custom-functions-none)
+  - [Purpose](#purpose)
+  - [Cloning Microscope](#cloning-microscope)
+  - [Download OrionJS](#download-orionjs)
+  - [Initial Impressions](#initial-impressions)
+  - [Creating Users](#creating-users)
+  - [Adding and Removing Roles from Users](#adding-and-removing-roles-from-users)
+    - [Getting Roles](#getting-roles)
+    - [Setting Roles](#setting-roles)
+  - [Adding Collections to OrionJS](#adding-collections-to-orionjs)
+  - [Updating Collection Documents](#updating-collection-documents)
+    - [Schemas](#schemas)
+  - [Adding Comments Collection](#adding-comments-collection)
+  - [Custom Input Types (Widgets)](#custom-input-types-widgets)
+    - [Adding Summernote](#adding-summernote)
+    - [Orion Attributes](#orion-attributes)
+    - [Adding Images (none)](#adding-images-none)
+  - [Changing Tabular Templates](#changing-tabular-templates)
+    - [orion.attributeColumn()](#orionattributecolumn)
+  - [Custom Tabular Templates (none)](#custom-tabular-templates-none)
+  - [Relationships (none)](#relationships-none)
+  - [Custom FunctNions (none)](#custom-functnions-none)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Meteor OrionJS with Microscope Tutorial ##
+# Meteor OrionJS with Microscope Tutorial #
 
 ## Purpose ##
 
@@ -78,7 +80,7 @@ underscore                   1.0.3  Collection of small helpers: _.map, _.each, 
 ```
 ## Initial Impressions ##
 
-Great! Now that we've added all these packages, let's start up Microscope and see how fucked up we made everything.
+Great! Now that we've added all these packages, let's start up Microscope and see how screwed up we made everything.
 ```
 meteor
 ```
@@ -92,7 +94,7 @@ Now let's go to `http://localhost:3000/admin`
 
 ![enter image description here](https://lh3.googleusercontent.com/yjUHPNxc1wclW3M-pPFIk1J_F8IglciV8NU85nIwNE0=s0 "Screenshot from 2015-07-23 22:56:17.png")
 
-Looks like shit.
+Looks like crap.
 
 The reason this is here is because there's a hidden red alert box that is floating right. It's a style that was defined in Microscope so let's go remove it. Comment out that line of code.
 
@@ -110,11 +112,11 @@ The reason this is here is because there's a hidden red alert box that is floati
   pointer-events: auto;
 }
 ```
-This is going to make Microscope look crappier but I'm shit at CSS so fuckit.
+This is going to make Microscope look crappier but I'm crap at CSS so screwit.
 
 ![enter image description here](https://lh3.googleusercontent.com/UwazTdhYJp0Rx_aYIbwJp52UOQbhLPfv5VvqrZJH8jo=s0 "Screenshot from 2015-07-23 23:10:09.png")
 
-Better. The invisible alert box is still taking up space but I can't be fucked to do anything about it.
+Better. The invisible alert box is still taking up space but I can't be screwed to do anything about it.
 
 ## Creating Users ##
 
@@ -186,7 +188,7 @@ Now let's log in **as Sacha** and see what happens. Once logged in, click on the
 
 It turns out that by default, OrionJS will create a user `Role` called `admin` and if there is no `admin`,  will assign the **first** user created with `Accounts.createUser` as an `admin`. Remember this so you're not creating accidental admin users in your fixtures code.
 
-I can't spell Sasha's name for shit so let's remove him as admin and have Tom as admin. Because ignoring your spelling weaknesses make them go away.
+I can't spell Sasha's name for crap so let's remove him as admin and have Tom as admin. Because ignoring your spelling weaknesses make them go away.
 
 ## Adding and Removing Roles from Users ##
 
@@ -206,7 +208,7 @@ Unlike other user roles packages, the `role` of the user in `OrionJS` isn't stor
 Instead, each separate `role` is stored in a `Roles` collection and the `userId` of the user is referenced along with an array containing their `roles`.
 
 ### Getting Roles###
-Let's fuck around in the Chrome console before we do anything. While in the `Accounts` admin page, do:
+Let's screw around in the Chrome console before we do anything. While in the `Accounts` admin page, do:
 
 ```console
 var id = Meteor.users.findOne({username: "sacha"})._id;
@@ -341,7 +343,7 @@ But when we click on a table item we get:
 
 ![enter image description here](https://lh3.googleusercontent.com/UPlVwdKLDXf2UBsX3JqLdTpoG989DelOau61HHB84MA=s0 "Screenshot from 2015-07-24 00:39:06.png")
 
-Errors and shit.
+Errors and crap.
 
 Luckily the error is pretty descriptive. This form needs either a schema or a collection.
 
@@ -353,7 +355,7 @@ When we click on one of the table items we expect to go to an update form for th
 
 Schemas are these little (tee-hee) things that define how the data in your database should be. If you've got a `User` document with a `first_name` property, you'd expect the value to be a `type: String`. If having a first name is critical, you'd want it to be `optional: false`. 
 
-We use schemas to keep our data consistent. MongoDB is inherently a schema-less database. It would happily allow you to fuck yourself over by storing an array of booleans inside the `first_name` property of your `user` document, for instance. And then you go to access it and your wife leaves you (probably not your husband because he's clueless).
+We use schemas to keep our data consistent. MongoDB is inherently a schema-less database. It would happily allow you to screw yourself over by storing an array of booleans inside the `first_name` property of your `user` document, for instance. And then you go to access it and your wife leaves you (probably not your husband because he's clueless).
 
 So this is why people decided to make a schema package for Meteor. They love you and want happy families.
 
@@ -441,7 +443,7 @@ Save and try clicking on a post item again.
 
 ![enter image description here](https://lh3.googleusercontent.com/xUKRDnSsT3THV3fi-HocLdl3uAwkTyt_YRC_nswc8eA=s0 "Screenshot from 2015-07-24 03:57:39.png")
 
-Ohhhhh... shit! It's almost like I... planned... things.
+Ohhhhh... crap! It's almost like I... planned... things.
 
 Play around with this form and look at how the `schema` we defined directly correlates to how this form was generated.
 
@@ -633,7 +635,9 @@ __proto__: Object
 ```
 Oh. looks like by adding the `orionjs:summernote` package we got access to this method that returns a pre-made object for us that we can conveniently use in our schema. Remember that `aldeed:autoform` uses the schema to figure out *how* to generate form items, so this attribute did all the defining-the-input-widget stuff for us.
 
-I'm going to make this comment fabulous. ROYGBIV and Comic Sans the shit out of that comment, Sechie.
+`orion.attribute('nameOfAnAttribute', optionalObjectToExtendThisAttributeWith)`
+
+I'm going to make this comment fabulous. ROYGBIV and Comic Sans the crap out of that comment, Sechie.
 
 ![enter image description here](https://lh3.googleusercontent.com/eVMz0FVebRmy05ZPPU9p3b_91o56QjbK7GfgK0mIvaA=s0 "Screenshot from 2015-07-24 18:37:15.png")
 
@@ -661,6 +665,76 @@ Let's survey the improvements by going to the main page and clicking on the comm
 Beauty. 
 
 ###Adding Images (none)###
-##Custom Tabular Values##
+##Changing Tabular Templates##
+
+If we go back to our admin pane and look at comments, we see that the `Submitted` column looks kind of crappy:
+
+`![enter image description here](https://lh3.googleusercontent.com/LROiQg6mMP5rpG844QNv-njdxyB5ltffUASPpbx606M=s0 "Screenshot from 2015-07-24 04:33:38.png")
+
+The `Submitted` column contains WAY too much information. Something like Month-Day-Year-Time would look nicer. I'm going to completely ignore you people who do it the more logical way of Time-Day-Month-Year because, uh, freedom.
+
+If you guessed that we need to go back into our `Schema` to change this, you just WON the JACKPOT of zero money.
+
+We are interested in:
+
+      orion.attributeColumn('createdAt', 'submitted', 'FREEDOM!!!'),
+
+```javascript
+/lib/collections/comments.js
+
+Comments = new orion.collection('comments', {
+  singularName: 'comment', // The name of one of these items
+  pluralName: 'comments', // The name of more than one of these items
+  link: {
+    // *
+    //  * The text that you want to show in the sidebar.
+    //  * The default value is the name of the collection, so
+    //  * in this case it is not necessary.
+     
+    title: 'Comments' 
+  },
+  /**
+   * Tabular settings for this collection
+   */
+  tabular: {
+    // here we set which data columns we want to appear on the data table
+    // in the CMS panel
+    columns: [
+      { 
+        data: "author", 
+        title: "Author" 
+      },{ 
+        data: "postId", 
+        title: "Post ID" 
+      },
+      orion.attributeColumn('createdAt', 'submitted', 'FREEDOM!!!'),
+      // { 
+      //   data: "submitted", 
+      //   title: "Submitted" 
+      // },
+    ]
+  }
+});
+```
+
+Let's check it out!
+
+![enter image description here](https://lh3.googleusercontent.com/YVicjxMpRLn3A5J1xNI-PRRQGWjCdtt_u6E77QHEp9A=s0 "Screenshot from 2015-07-24 20:10:05.png")
+
+###orion.attributeColumn()###
+
+This handy-dandy method goes like this:
+
+`orion.attributeColumn('nameOfTemplate', 'keyNameOnYourObject', 'columnLabel')`
+
+Think about it. Meteor uses templates to display stuff. We had a crazy long date and we wanted to change the *look* of it, so using a template makes sense.
+
+Luckily, `OrionJS` comes with some pre-made templates. One of them happens to be called `createdAt` (technically `attributePreview.createdAt`). 
+
+`createdAt` wants a `Date` object, which happens to reside in the `submitted` key of each of your documents in the `Comments` collection. Lastly, we tell it what we want our column label to be.
+
+Now, some freedom-hating people probably want a custom template for Time-Day-Month-Year. Let's get to that next.
+
+##Custom Tabular Templates (none)##
 ##Relationships (none)##
-##Custom Functions (none)##
+##Custom FunctNions (none)##
