@@ -1,5 +1,7 @@
 ## Meteor OrionJS with Microscope Tutorial ##
 
+[TOC]
+
 ## Purpose ##
 
 I haven't been able to find a good tutorial that goes through the end-to-end setup for OrionJS, so I decided to create this tutorial both as a learning resource for others but also as a way for me to keep track of my own progress as I poke around OrionJS and figure out how to do stuff with it.
