@@ -15,3 +15,5 @@ audit-argument-checks
 orionjs:core
 fortawesome:fontawesome
 orionjs:bootstrap
+orionjs:summernote
+orionjs:relationships
