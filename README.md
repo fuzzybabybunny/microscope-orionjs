@@ -23,7 +23,9 @@
     - [orion.attributeColumn()](#orionattributecolumn)
   - [Custom Tabular Templates (none)](#custom-tabular-templates-none)
   - [Dictionary (updated 7/28/2015)](#dictionary-updated-7282015)
-  - [Relationships (none)](#relationships-none)
+  - [Relationships](#relationships)
+    - [hasOne](#hasone)
+    - [hasMany](#hasmany)
   - [Custom Functions (none)](#custom-functions-none)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -705,10 +707,6 @@ Comments = new orion.collection('comments', {
         title: "Post ID" 
       },
       orion.attributeColumn('createdAt', 'submitted', 'FREEDOM!!!'),
-      // { 
-      //   data: "submitted", 
-      //   title: "Submitted" 
-      // },
     ]
   }
 });
@@ -845,5 +843,165 @@ Now for the front-end!
 
 So PRO! The clipping-off of the T&C gives legitimacy and trustworthiness to the site.
 
-##Relationships (none)##
+##Relationships##
+
+[Additional Documentation](https://github.com/orionjs/documentation/blob/master/docs/attributes/relationships.md)
+
+OrionJS has the ability to define two types of relationships between collection objects, `hasOne` and `hasMany`. You can use these relationships to easily do CRUD between collections inside of the admin backend.
+
+`meteor add orionjs:relationships`
+
+In Microscope:
+
+`Posts` has many `Comments`
+`Comments` has one `Post`
+
+###hasOne###
+
+Let's do `hasOne` first. Just like with a traditional SQL database, the relationships are defined in the schema as well.
+
+```
+/lib/collections/comments.js
+
+Comments.attachSchema(new SimpleSchema({
+  // here is where we define `a comment has one post`
+  // Each document in Comment has a postId
+  postId: orion.attribute('hasOne', {
+    // the label is the text that will show up on the Update form's label
+    label: 'Post'
+  }, {
+    // specify the collection you're making the relationship with
+    collection: Posts,
+    // the key whose value you want to show for each Post document on the Update form
+    titleField: 'title',
+    // dunno
+    publicationName: 'someRandomString',
+  }),
+  userId: {
+    type: String,
+    optional: false,
+    label: 'User ID',
+  },
+  author: {
+    type: String,
+    optional: false,
+  },
+  submitted: {
+    type: Date,
+    optional: false,
+  },
+  body: orion.attribute('summernote', {
+    label: 'Body'
+  }),
+}));
+```
+
+Now go to the admin backend and click on a comment:
+
+![enter image description here](https://lh3.googleusercontent.com/4t50qpBophwbQ3q-gYqMaI2NDO6mJDYTlBNTgsc4Qok=s0 "Screenshot from 2015-07-28 03:24:36.png")
+
+Will you look at that... OrionJS was able to determine the specific `post` that this comment is related to and create a dropdown menu for us to change the post if we so desire. And it works - if you change the post and click Save you'll see the comment pop up in there.
+
+###hasMany###
+
+One `Post` has many `Comments`. Let's go to the schema for `Posts`
+
+```javascript
+/lib/collections/posts.js
+
+Posts.attachSchema(new SimpleSchema({
+
+  comments: orion.attribute('hasMany', {
+    // the value inside the `comments` key will be an array of comment IDs
+    type: [String],
+    label: 'Comments for this Post',
+    // optional is true because you can have a post without comments
+    optional: true
+  }, {
+    collection: Comments,
+    titleField: 'body',
+    publicationName: 'someOtherRandomString'
+  }),
+
+  // We use `label` to put a custom label for this form field
+  // Otherwise it would default to `Title`
+  // 'optional: false' means that this field is required
+  // If it's blank, the form won't submit and you'll get a red error message
+  // 'type' is where you can set the expected data type for the 'title' key's value
+  title: {
+    type: String,
+    optional: false,
+    label: 'Post Title'
+  },
+  // regEx will validate this form field according to a RegEx for a URL
+  url: {
+    type: String,
+    optional: false,
+    label: 'URL',
+    regEx: SimpleSchema.RegEx.Url
+  },
+  // autoform determines other aspects for how the form is generated
+  // In this case we're making this field hidden from view
+  userId: {
+    type: String,
+    optional: false,
+    autoform: {
+      type: "hidden",
+      label: false
+    },
+  },
+  author: {
+    type: String,
+    optional: false,
+  },
+  // 'type: Date' means that this field is expecting a data as an entry
+  submitted: {
+    type: Date,
+    optional: false,
+  },
+  commentsCount: {
+    type: Number,
+    optional: false
+  },
+  // 'type: [String]' means this key's value is an array of strings'
+  upvoters: {
+    type: [String],
+    optional: true,
+    autoform: {
+      disabled: true,
+      label: false
+    },
+  },
+  votes: {
+    type: Number,
+    optional: true
+  },
+}));
+```
+Inside the same file disable this `deny` rule:
+```javascript
+// Posts.deny({
+//   update: function(userId, post, fieldNames) {
+//     // may only edit the following two fields:
+//     return (_.without(fieldNames, 'url', 'title').length > 0);
+//   }
+// });
+```
+
+Let's see it!
+
+![enter image description here](https://lh3.googleusercontent.com/uM36XR54Q94ZpFu5dwqukgRRb318eoMtvQ72Kfn4PTg=s0 "Screenshot from 2015-07-28 04:36:28.png")
+
+Niiiice. 
+
+BUT let's talk about the limitations of defining relationships:
+
+- If you remove a comment on the Update Post page, it will NOT automatically remove that post from the associated Update Comment page or on the main website.
+
+- Likewise, if you change the post for a particular comment in the Update Comment page, it will also not automatically reflect in the associated Post page or on the main website.
+
+- This is because MongoDB is inherently non-relational and implementing hard-relations like in an SQL DB requires extra code (which isn't currently available in this `orionjs:relationships` package.
+
+- In conclusion, be very careful setting "relationships." You can easily get some marvelous data inconsistencies that will LITERALLY lead to the extinction of all cats.
+
 ##Custom Functions (none)##
