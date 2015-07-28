@@ -3,10 +3,6 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
-      - [
-      {{author}}
-      on {{submittedText}}
-    ](#author%0A------on-submittedtext)
   - [Purpose](#purpose)
   - [Cloning Microscope](#cloning-microscope)
   - [Download OrionJS](#download-orionjs)
@@ -26,8 +22,9 @@
   - [Changing Tabular Templates](#changing-tabular-templates)
     - [orion.attributeColumn()](#orionattributecolumn)
   - [Custom Tabular Templates (none)](#custom-tabular-templates-none)
+  - [Dictionary (updated 7/28/2015)](#dictionary-updated-7282015)
   - [Relationships (none)](#relationships-none)
-  - [Custom FunctNions (none)](#custom-functnions-none)
+  - [Custom Functions (none)](#custom-functions-none)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -729,12 +726,124 @@ This handy-dandy method goes like this:
 
 Think about it. Meteor uses templates to display stuff. We had a crazy long date and we wanted to change the *look* of it, so using a template makes sense.
 
-Luckily, `OrionJS` comes with some pre-made templates. One of them happens to be called `createdAt` (technically `attributePreview.createdAt`). 
+Luckily, `OrionJS` comes with some pre-made templates. One of them happens to be called `createdAt`.
 
 `createdAt` wants a `Date` object, which happens to reside in the `submitted` key of each of your documents in the `Comments` collection. Lastly, we tell it what we want our column label to be.
 
 Now, some freedom-hating people probably want a custom template for Time-Day-Month-Year. Let's get to that next.
 
 ##Custom Tabular Templates (none)##
+
+##Dictionary (updated 7/28/2015)##
+
+Let's go back to the Microscope main page. Say that you wanted to add a little description blurb after the word `Microscope` at the top left. 
+
+- You not only want to add a description, but you want to be able to periodically change it as well AND you want text formatting on it AND you don't want to touch any code to change it - all you want is to change it from the OrionJS admin panel from inside of an update form.
+
+- And since I'm rolling right now, let's be able to change the `Microscope` word as well.
+
+- AND since people like to sue, let's add a terms and conditions blurb at the bottom of every `Post Submit` page that our lawyers can periodically update with worse and worse conditions for the consumer.
+
+Sounds like we need a collection, a schema, and a dictionary of some sort that keeps track of  lolidontknowhowtoexplainjustkeepreading.
+
+Create a new file:
+```javascript
+/lib/orion_dictionary.js
+
+orion.dictionary.addDefinition('title', 'mainPage', {
+    type: String,
+    label: 'Site Title',
+    optional: false,
+    min: 1,
+    max: 40
+});
+
+orion.dictionary.addDefinition('description', 'mainPage', 
+  orion.attribute('summernote', {
+    label: 'Site Description',
+    optional: true
+  })
+);
+
+orion.dictionary.addDefinition('termsAndConditions', 'submitPostPage',  
+  orion.attribute('summernote', {
+    label: 'Terms and Conditions',
+    optional: true
+  })
+);
+```
+
+`orion.dictionary.addDefinition()` takes three arguments:
+```
+orion.dictionary.addDefinition(
+   nameOfYourDictionaryItem, 
+   categoryOfYourDictionaryItem, 
+   schemaForYourDictionaryItem 
+);
+```
+You'll see how this pans out in a little bit.
+```
+/client/templates/includes/header.html
+
+<template name="header">
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{pathFor 'home'}}">
+
+<!-- The third argument, `Microscope`, is the default value that will be shown if `mainPage.title` doesn't have a value set. -->
+        {{ dict 'mainPage.title' 'Microscope' }}
+
+        {{#if dict 'mainPage.description'}}
+         - {{{ dict 'mainPage.description' }}}
+        {{/if}}
+
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" id="navigation">
+      <ul class="nav navbar-nav">
+```
+
+```
+/client/templates/posts/post_submit.html
+
+    <div class="form-group {{errorClass 'title'}}">
+      <label class="control-label" for="title">Title</label>
+      <div class="controls">
+          <input name="title" id="title" type="text" value="" placeholder="Name your post" class="form-control"/>
+          <span class="help-block">{{errorMessage 'title'}}</span>
+      </div>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary"/>
+  </form>
+  
+  {{#if dict 'submitPostPage.termsAndConditions'}}
+  <div>TERMS AND CONDITIONS</div>
+  <div>{{{ dict 'submitPostPage.termsAndConditions' }}}</div>
+  {{/if}}
+  
+</template>
+```
+Let's look at the damage!
+
+Looks like a new entry called `Dictionary` was created. And `nameOfYourDictionaryItem, categoryOfYourDictionaryItem,` and `schemaForYourDictionaryItem` are being used from `orion.dictionary.addDefinition()`. Go ahead and mess around with the forms.
+
+![enter image description here](https://lh3.googleusercontent.com/Fda7VeIxXRViSV6JjEZY3dR3A2cP2pnZ__5GjtAWdJE=s0 "Screenshot from 2015-07-28 00:39:13.png")
+
+![enter image description here](https://lh3.googleusercontent.com/T-PkZDKttbIDYYxBldnpI-XYJJSVk6MqxaHFCpoTxNI=s0 "Screenshot from 2015-07-28 00:39:35.png")
+
+Now for the front-end!
+
+![enter image description here](https://lh3.googleusercontent.com/nMwCXcpq0ntrzcfVB-EB_9w1JX02jIoq3D-wE6BAfrk=s0 "Screenshot from 2015-07-28 00:40:10.png")
+
+![enter image description here](https://lh3.googleusercontent.com/cSMgyE6l0hrFCJ8Mzuoot8teEcptPP3AFb9btg5Vq3M=s0 "Screenshot from 2015-07-28 00:39:57.png")
+
+So PRO! The clipping-off of the T&C gives legitimacy and trustworthiness to the site.
+
 ##Relationships (none)##
-##Custom FunctNions (none)##
+##Custom Functions (none)##

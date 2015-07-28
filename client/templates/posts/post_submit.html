@@ -16,4 +16,8 @@
     </div>
     <input type="submit" value="Submit" class="btn btn-primary"/>
   </form>
+  {{#if dict 'submitPostPage.termsAndConditions'}}
+  <div>TERMS AND CONDITIONS</div>
+  <div>{{{ dict 'submitPostPage.termsAndConditions' }}}</div>
+  {{/if}}
 </template>
