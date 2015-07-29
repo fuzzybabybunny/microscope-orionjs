@@ -18,7 +18,9 @@
   - [Custom Input Types (Widgets)](#custom-input-types-widgets)
     - [Adding Summernote](#adding-summernote)
     - [Orion Attributes](#orion-attributes)
-    - [Adding Images (none)](#adding-images-none)
+    - [Adding Images to Amazon S3 (updated 07/28/2015)](#adding-images-to-amazon-s3-updated-07282015)
+      - [Setting up S3](#setting-up-s3)
+      - [Configuring OrionJS](#configuring-orionjs)
   - [Changing Tabular Templates](#changing-tabular-templates)
     - [orion.attributeColumn()](#orionattributecolumn)
   - [Custom Tabular Templates (none)](#custom-tabular-templates-none)
@@ -663,7 +665,159 @@ Let's survey the improvements by going to the main page and clicking on the comm
 
 Beauty. 
 
-###Adding Images (none)###
+###Adding Images to Amazon S3 (updated 07/28/2015)###
+
+No comment will be complete without image spamming. 
+
+Some notes:
+
+- currently, uploading images directly from Summernote doesn't work
+- images will be hosted through Amazon S3. I don't go over how to do it with `GridFS` or other filesystem packages.
+
+`meteor add orionjs:image-attribute orionjs:filesystem orionjs:s3`
+
+####Setting up S3####
+
+You're going to want to follow this tutorial FIRST to set up your Amazon S3:
+
+https://github.com/Lepozepo/S3/#amazon-s3-uploader
+
+Make sure that you've got your S3 credentials in your `server` folder:
+
+```javascript
+/server/s3_credentials.js
+
+// something like this
+S3.config = {
+    key: 'BVT&(Y*(H&TG*&H',
+    secret: 'B^&Y*UGUFGO*(PU(/7sdfgwTVwS/',
+    bucket: 'meteor.microscopelolololololol',
+    region: 'us-west-1'
+};
+```
+
+Ok, go into a comment in the admin panel and upload something!
+
+![enter image description here](https://lh3.googleusercontent.com/ZY2zJWFCdv25VDgbAE3yjPxD-ByUIngSW9-SEuzloaI=s0 "Screenshot from 2015-07-29 00:04:39.png")
+
+Make sure to click on the `Save` button after you're done.  Also note that the moment you select an image the Amazon uploader will start. You'll see a progress bar.
+
+Finally, we should go see what it looks like on the main page, but remember to modify the comment template with the new image field that a comment document now has.
+
+```
+/client/templates/comments/comment_item.html
+
+<template name="commentItem">
+  <li>
+    <h4>
+      <span class="author">{{author}}</span>
+      <span class="date">on {{submittedText}}</span>
+    </h4>
+    <p>{{{body}}}</p>
+    {{#if image }}
+      <img src="{{image.url}}">
+    {{/if}}
+  </li>
+</template>
+```
+
+Voila!
+
+![enter image description here](https://lh3.googleusercontent.com/bKct-GlqtHXJYrfQkoiaZrq1XH0D1Q08UyH_PUgPZYE=s0 "Screenshot from 2015-07-29 00:05:07.png")
+
+Sechhi and Tom are going to KILL me.
+
+####Configuring OrionJS####
+
+Create a new file:
+
+```javascript
+/lib/orion_filesystem.js
+
+/**
+ * Official S3 Upload Provider
+ * 
+ * Please replace this function with the 
+ * provider you prefer.
+ *
+ * If success, call success(publicUrl);
+ * you can pass data and it will be saved in file.meta
+ * Ej: success(publicUrl, {local_path: '/user/path/to/file'})
+ *
+ * If it fails, call failure(error).
+ *
+ * When the progress change, call progress(newProgress)
+ */
+orion.filesystem.providerUpload = function(options, success, failure, progress) {
+  S3.upload({
+    files: options.fileList,
+    path: 'orionjs',
+  }, function(error, result) {
+    debugger
+    if (error) {
+      failure(error);
+    } else {
+      success(result.secure_url, { s3Path: result.relative_url });
+      result;
+      debugger
+    }
+    S3.collection.remove({})
+  });
+  Tracker.autorun(function () {
+    var file = S3.collection.findOne();
+    if (file) {
+      progress(file.percent_uploaded);
+    }
+  });
+};
+
+/**
+ * Official S3 Remove Provider
+ * 
+ * Please replace this function with the 
+ * provider you prefer.
+ *
+ * If success, call success();
+ * If it fails, call failure(error).
+ */
+orion.filesystem.providerRemove = function(file, success, failure)  {
+  S3.delete(file.meta.s3Path, function(error, result) {
+    if (error) {
+      failure(error);
+    } else {
+      success();
+    }
+  })
+};
+```
+What this bit of code does is defines two methods - one for uploading a file to S3 and another for removing a file from S3. It also adds a progress bar during the upload process.
+
+Now it's schema time again!
+
+```javascript
+/lib/collections/comments.js
+
+  author: {
+    type: String,
+    optional: false,
+  },
+  submitted: {
+    type: Date,
+    optional: false,
+  },
+  body: orion.attribute('summernote', {
+    label: 'Body'
+  }),
+  image: orion.attribute('image', {
+    optional: true,
+    label: 'Comment Image'
+  }),
+}));
+```
+
+
+
+
 ##Changing Tabular Templates##
 
 If we go back to our admin pane and look at comments, we see that the `Submitted` column looks kind of crappy:

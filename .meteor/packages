@@ -17,3 +17,10 @@ fortawesome:fontawesome
 orionjs:bootstrap
 orionjs:summernote
 orionjs:relationships
+orionjs:image-attribute
+cfs:standard-packages
+cfs:gridfs
+cfs:autoform
+orionjs:filesystem
+orionjs:s3
+orionjs:file-attribute

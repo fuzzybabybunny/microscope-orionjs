@@ -5,5 +5,8 @@
       <span class="date">on {{submittedText}}</span>
     </h4>
     <p>{{{body}}}</p>
+    {{#if image }}
+    	<img src="{{image.url}}">
+    {{/if}}
   </li>
 </template>
