@@ -682,7 +682,7 @@ You're going to want to follow this tutorial FIRST to set up your Amazon S3:
 
 https://github.com/Lepozepo/S3/#amazon-s3-uploader
 
-Make sure that you've got your S3 credentials in your `server` folder:
+Make sure that you've got your S3 credentials in your `server` folder. It wouldn't hurt to add this file to your `.gitignore` file as well. On second thought, scratch what I just said and send me links to your repos instead... because... porn.
 
 ```javascript
 /server/s3_credentials.js
@@ -695,37 +695,6 @@ S3.config = {
     region: 'us-west-1'
 };
 ```
-
-Ok, go into a comment in the admin panel and upload something!
-
-![enter image description here](https://lh3.googleusercontent.com/ZY2zJWFCdv25VDgbAE3yjPxD-ByUIngSW9-SEuzloaI=s0 "Screenshot from 2015-07-29 00:04:39.png")
-
-Make sure to click on the `Save` button after you're done.  Also note that the moment you select an image the Amazon uploader will start. You'll see a progress bar.
-
-Finally, we should go see what it looks like on the main page, but remember to modify the comment template with the new image field that a comment document now has.
-
-```
-/client/templates/comments/comment_item.html
-
-<template name="commentItem">
-  <li>
-    <h4>
-      <span class="author">{{author}}</span>
-      <span class="date">on {{submittedText}}</span>
-    </h4>
-    <p>{{{body}}}</p>
-    {{#if image }}
-      <img src="{{image.url}}">
-    {{/if}}
-  </li>
-</template>
-```
-
-Voila!
-
-![enter image description here](https://lh3.googleusercontent.com/bKct-GlqtHXJYrfQkoiaZrq1XH0D1Q08UyH_PUgPZYE=s0 "Screenshot from 2015-07-29 00:05:07.png")
-
-Sechhi and Tom are going to KILL me.
 
 ####Configuring OrionJS####
 
@@ -790,9 +759,9 @@ orion.filesystem.providerRemove = function(file, success, failure)  {
   })
 };
 ```
-What this bit of code does is defines two methods - one for uploading a file to S3 and another for removing a file from S3. It also adds a progress bar during the upload process.
+What this bit of code does is it defines two methods - one for uploading a file to S3 and another for removing a file from S3. It also adds a progress bar during the upload process.
 
-Now it's schema time again!
+Now it's schema time again since we want to add a file upload section to our Comment Update form!
 
 ```javascript
 /lib/collections/comments.js
@@ -815,8 +784,36 @@ Now it's schema time again!
 }));
 ```
 
+Go into a comment in the admin panel and upload something!
 
+![enter image description here](https://lh3.googleusercontent.com/ZY2zJWFCdv25VDgbAE3yjPxD-ByUIngSW9-SEuzloaI=s0 "Screenshot from 2015-07-29 00:04:39.png")
 
+Make sure to click on the `Save` button after you're done.  Also note that the moment you select an image the Amazon uploader will start. You'll see a progress bar.
+
+Finally, we should go see what it looks like on the main page, but remember to modify the `comment_item` template with the new `image` key that a `comment` document now has.
+
+```
+/client/templates/comments/comment_item.html
+
+<template name="commentItem">
+  <li>
+    <h4>
+      <span class="author">{{author}}</span>
+      <span class="date">on {{submittedText}}</span>
+    </h4>
+    <p>{{{body}}}</p>
+    {{#if image }}
+      <img src="{{image.url}}">
+    {{/if}}
+  </li>
+</template>
+```
+
+Voila!
+
+![enter image description here](https://lh3.googleusercontent.com/bKct-GlqtHXJYrfQkoiaZrq1XH0D1Q08UyH_PUgPZYE=s0 "Screenshot from 2015-07-29 00:05:07.png")
+
+Sassha and Tom are going to KILL me.
 
 ##Changing Tabular Templates##
 
