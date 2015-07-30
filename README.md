@@ -1,6 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+**Table of Contents**
 
 - [Meteor OrionJS with Microscope Tutorial](#meteor-orionjs-with-microscope-tutorial)
   - [Purpose](#purpose)
@@ -21,9 +21,12 @@
     - [Adding Images to Amazon S3 (updated 07/28/2015)](#adding-images-to-amazon-s3-updated-07282015)
       - [Setting up S3](#setting-up-s3)
       - [Configuring OrionJS](#configuring-orionjs)
-  - [Changing Tabular Templates](#changing-tabular-templates)
+  - [Changing Tabular Templates (updated 7/29/2015)](#changing-tabular-templates-updated-7292015)
     - [orion.attributeColumn()](#orionattributecolumn)
-  - [Custom Tabular Templates (none)](#custom-tabular-templates-none)
+    - [Custom Tabular Templates](#custom-tabular-templates)
+      - [Template-Level Subscriptions](#template-level-subscriptions)
+      - [Meteor Tabular Render](#meteor-tabular-render)
+      - [Meteor Tabular with Actual Templates](#meteor-tabular-with-actual-templates)
   - [Dictionary (updated 7/28/2015)](#dictionary-updated-7282015)
   - [Relationships](#relationships)
     - [hasOne](#hasone)
@@ -815,15 +818,21 @@ Voila!
 
 Sassha and Tom are going to KILL me.
 
-##Changing Tabular Templates##
+##Changing Tabular Templates (updated 7/29/2015)##
 
-If we go back to our admin pane and look at comments, we see that the `Submitted` column looks kind of crappy:
+If we go back to our admin panel and look at comments, we see that the table is pretty dumb:
 
 `![enter image description here](https://lh3.googleusercontent.com/LROiQg6mMP5rpG844QNv-njdxyB5ltffUASPpbx606M=s0 "Screenshot from 2015-07-24 04:33:38.png")
 
-The `Submitted` column contains WAY too much information. Something like Month-Day-Year-Time would look nicer. I'm going to completely ignore you people who do it the more logical way of Time-Day-Month-Year because, uh, freedom.
+1. The `Submitted` column contains WAY too much information. Something like Month-Day-Year-Time would look nicer. I'm going to completely ignore you people who do it the more logical way of Time-Day-Month-Year because, uh, freedom.
 
-If you guessed that we need to go back into our `Schema` to change this, you just WON the JACKPOT of zero money.
+2. We also have the issue of the `Post ID` column being essentially stupid. I'd prefer if that column contained the title of the Post instead. 
+
+3. I also want a column that shows a short blurb of the comment's `body`, something like `Interesting project Sacha, can I...`
+
+Let's tackle #1 first. If you guessed that we need to go back into our `Schema` to change this, you just WON the JACKPOT of zero money.
+
+###orion.attributeColumn()###
 
 We are interested in:
 
@@ -867,8 +876,6 @@ Let's check it out!
 
 ![enter image description here](https://lh3.googleusercontent.com/YVicjxMpRLn3A5J1xNI-PRRQGWjCdtt_u6E77QHEp9A=s0 "Screenshot from 2015-07-24 20:10:05.png")
 
-###orion.attributeColumn()###
-
 This handy-dandy method goes like this:
 
 `orion.attributeColumn('nameOfTemplate', 'keyNameOnYourObject', 'columnLabel')`
@@ -881,7 +888,211 @@ Luckily, `OrionJS` comes with some pre-made templates. One of them happens to be
 
 Now, some freedom-hating people probably want a custom template for Time-Day-Month-Year. Let's get to that next.
 
-##Custom Tabular Templates (none)##
+###Custom Tabular Templates###
+
+Now onto issue #2 - the `Post ID` column should be the title of the Post instead. 
+
+Open up Chrome Console and type in `Comments.findOne()`. It found a comment, right?
+
+Now do `Posts.findOne()`. Hmmm... no post found. That's because this route isn't subscribed to anything in the `Posts` collection. If you've done Meteor before, chances are you've been using `Iron Router` to manage your data subscriptions for your routes. Unfortunately, since OrionJS is a package, it's difficult to tap into and modify the generated routes that OrionJS has already made for us. So what do we do?
+
+####Template-Level Subscriptions####
+
+Meteor can subscribe to data in normal template callbacks (`onRendered, onCreated`). And as it turns out, OrionJS has a very standardized template naming scheme*. 
+
+`collections.myCollection.index` - the main page that lists all the items in the collection
+`collections.myCollection.create` - the form for creating a new item in the collection
+`collections.myCollection.update` - the form for updating an existing item in the collection
+`collections.myCollection.delete` - the form/page for deleting an existing item in the collection
+
+These, by the way, are your standard pages for CRUD actions.
+
+*These aren't necessarily the actual names of the templates, but the `identifier` that OrionJS uses to find the actual template.
+
+BTW, if you want to see a list of all the route names that are registered with Iron Router, open up Chrome Console and do:
+
+```javascript
+_.each(Router.routes, function(route){
+  console.log(route.getName());
+});
+```
+
+Here are some more identifiers: http://orionjs.org/docs/customization#overridetemplates
+
+So let's use this to subscribe to the `Posts` collection on the `comments.index` template.
+
+```javascript
+/client/templates/orion/comments_index.js
+
+ReactiveTemplates.onCreated('collections.comments.index', function() {
+
+  this.subscribe('posts', {sort: {submitted: -1, _id: -1}, limit: 0});
+  
+});
+```
+
+What this is saying is that when the template with an identifier of 'collections.comments.index' (the `Comments` index page) is created, subscribe the template to the data you specify.
+
+Now go back to the `Comments` index page and do `Posts.find().count()` to see that you've got `Posts` now!
+
+####Meteor Tabular Render####
+
+So now that this page has the data we need, how do we actually change the contents of the cell itself?
+
+`OrionJS` uses `aldeed:meteor-tabular` to show its datatables, and it just so happens that this latter package provides a way to change the cell value: https://github.com/aldeed/meteor-tabular#example
+
+```javascript
+/lib/collections/comments.js
+
+Comments = new orion.collection('comments', {
+  singularName: 'comment', // The name of one of these items
+  pluralName: 'comments', // The name of more than one of these items
+  link: {
+    title: 'Comments' 
+  },
+  /**
+   * Tabular settings for this collection
+   */
+  tabular: {
+    // here we set which data columns we want to appear on the data table
+    // in the CMS panel
+    columns: [
+      { 
+        data: "author", 
+        title: "Author" 
+      },{
+        data: "postId",
+        title: "Post Title",
+        render: function (val, type, doc) {
+          var postId = val;
+          var postTitle = Posts.findOne(postId).title;
+          return postTitle;
+        }
+      },
+      orion.attributeColumn('createdAt', 'submitted', 'FREEDOM!!!'),
+    ]
+  },
+});
+```
+Go play around inside this function. `console.log` `val`, `type`, and `doc` to see what they are:
+
+```javascript
+{
+  data: "postId",
+  title: "Post Title",
+  render: function (val, type, doc) {
+    var postId = val;
+    var postTitle = Posts.findOne(postId).title;
+    return postTitle;
+  }
+}
+```
+`data: "postId"` is critical here because that's how `val` gets its value.
+
+After you're through go back and look at the `Comments` index page:
+
+![enter image description here](https://lh3.googleusercontent.com/xuT9mpGBby25enedfg64fTEyuVWIXP_jFPXokNKpkx0=s0 "Screenshot from 2015-07-29 17:06:16.png")
+
+####Meteor Tabular with Actual Templates####
+
+Finally, onto #3. We want a column that shows a short blurb of the comment `body`, something like `Interesting project Sacha, can I...`. This is called `truncating` a string.
+
+I want to create an actual template for this:
+
+```html
+/client/templates/orion/comments_index_blurb_cell.html
+
+<template name="commentsIndexBlurbCell">
+  {{{ blurb }}}
+</template>
+```
+
+Hold on there Skippy! Truncating a straight string that's, say, 100 characters long into one that's 15 characters long with a `...` at the end is fairly straightforward. But remember that we added Summernote and we have a *fabulous* comment?
+
+![enter image description here](https://lh3.googleusercontent.com/8ja1upLimMWalVzUCAMWNmtULEb-xpvPzOiih5l99wg=s0 "Screenshot from 2015-07-24 18:46:03.png")
+
+The HTML for this comment actually looks like:
+
+```html
+<p><span style=\"font-family: 'Comic Sans MS'; font-size: 18px;\"><span style=\"background-color: rgb(255, 0, 0);\">You</span> <span style=\"background-color: rgb(255, 156, 0);\">sure</span> <span style=\"background-color: rgb(255, 255, 0);\">can</span> <span style=\"background-color: rgb(0, 255, 0);\">Tom</span><span style=\"background-color: rgb(0, 0, 255);\">!!!</span></span></p>
+```
+
+Sooo... we can't just do a simple truncate of this down to 15 characters. I mean, we can... 
+
+...IF WE'RE NUBZ! 
+
+But `pathable` is not a nub:
+
+https://github.com/pathable/truncate
+
+Go to `/client/javascript` and literally just chuck this script's `jquery.truncate.js` file in there. Meteor will take care of minifying and loading this script automatically onto your page, as it does with *all* javascript that's not in the `/public` folder.
+
+And now we can go ahead and create a helper for our template:
+
+```javascript
+/client/templates/orion/comments_index_blurb_cell.html
+
+Template.commentsIndexBlurbCell.helpers({
+
+  blurb: function(){
+    var blurb = jQuery.truncate(this.body, {
+      length: 15
+    });
+    return blurb
+  }
+
+});
+
+```
+
+Finally, we go back to modify our `tabular` object:
+
+```javascript
+/lib/comments.js
+
+Comments = new orion.collection('comments', {
+  singularName: 'comment', // The name of one of these items
+  pluralName: 'comments', // The name of more than one of these items
+  link: {
+    title: 'Comments' 
+  },
+  /**
+   * Tabular settings for this collection
+   */
+  tabular: {
+    // here we set which data columns we want to appear on the data table
+    // in the CMS panel
+    columns: [
+      { 
+        data: "author", 
+        title: "Author" 
+      },{
+        data: "postId",
+        title: "Post Title",
+        render: function (val, type, doc) {
+          var postId = val;
+          var postTitle = Posts.findOne(postId).title;
+          return postTitle;
+        }
+      },{
+        data: "body",
+        title: "Comment",
+        tmpl: Meteor.isClient && Template.commentsIndexBlurbCell
+      },
+      orion.attributeColumn('createdAt', 'submitted', 'FREEDOM!!!'),
+    ]
+  },
+});
+```
+`data: "body"` subscribes us to the values for the `body` key so that it's available for our template.
+
+`tmpl: Meteor.isClient && Template.commentsIndexBlurbCell` looks kind of weird but remember that this code is in `/lib`, which runs on both the client and server, and `Template` isn't defined on the server. So that's why `aldeed:meteor-tabular` requires you to do this `Meteor.isClient` thing.
+
+WABAM!
+
+![enter image description here](https://lh3.googleusercontent.com/_DiQmOxmyTqnDpR0lpfP3WC-D1TadvsDG08J_ApZvmg=s0 "Screenshot from 2015-07-29 17:53:03.png")
+
+And... done.
 
 ##Dictionary (updated 7/28/2015)##
 
