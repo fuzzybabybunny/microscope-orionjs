@@ -30,8 +30,9 @@
   - [Dictionary (updated 7/28/2015)](#dictionary-updated-7282015)
   - [Relationships](#relationships)
     - [hasOne](#hasone)
+        - [Chicken and the Egg](#chicken-and-the-egg)
+      - [Correcting File Load Order](#correcting-file-load-order)
     - [hasMany](#hasmany)
-  - [Custom Functions (none)](#custom-functions-none)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -1030,7 +1031,7 @@ Go to `/client/javascript` and literally just chuck this script's `jquery.trunca
 And now we can go ahead and create a helper for our template:
 
 ```javascript
-/client/templates/orion/comments_index_blurb_cell.html
+/client/templates/orion/comments_index_blurb_cell.js
 
 Template.commentsIndexBlurbCell.helpers({
 
@@ -1211,9 +1212,11 @@ So PRO! The clipping-off of the T&C gives legitimacy and trustworthiness to the 
 
 OrionJS has the ability to define two types of relationships between collection objects, `hasOne` and `hasMany`. You can use these relationships to easily do CRUD between collections inside of the admin backend.
 
+To add the ability to define these two relationships, do:
+
 `meteor add orionjs:relationships`
 
-In Microscope:
+In the case of Microscope:
 
 `Posts` has many `Comments`
 `Comments` has one `Post`
@@ -1222,7 +1225,7 @@ In Microscope:
 
 Let's do `hasOne` first. Just like with a traditional SQL database, the relationships are defined in the schema as well.
 
-```
+```javascript
 /lib/collections/comments.js
 
 Comments.attachSchema(new SimpleSchema({
@@ -1258,7 +1261,111 @@ Comments.attachSchema(new SimpleSchema({
 }));
 ```
 
-Now go to the admin backend and click on a comment:
+#####Chicken and the Egg####
+
+By now I hope that things have blown up in the server:
+
+`W20150731-06:35:14.565(-7)? (STDERR) ReferenceError: Posts is not defined`
+
+Let's do a quick summary of our two files, `comments.js` and `posts.js`:
+
+```javascript
+/lib/collections/comments.js
+
+Comments = new orion.collection('comments', {
+
+  // creates the collection and defines how the collection is represented as a table in OrionJS 
+
+});
+
+Comments.attachSchema(new SimpleSchema({
+
+  // defines the expected data types for each value inside a Comment document
+  // defines the relationship of a Comment document to a Post document
+
+});
+```
+```javascript
+/lib/collections/posts.js
+
+Posts = new orion.collection('posts', {
+
+  // creates the collection and defines how the collection is represented as a table in OrionJS 
+
+});
+
+Posts.attachSchema(new SimpleSchema({
+
+  // defines the expected data types for each value inside a Post document
+  // defines the relationship of a Post document to a Comment document
+
+});
+```
+
+See the problem?
+
+Meteor will load `comments.js` first because, for files residing in the same folder, Meteor will load files first in numerical order and then in alphabetical order. The problem arises because the `Comments` schema defines the relationship of the `Comments` collection to the `Posts` collection. The code in `comments.js` is referencing `Posts`, which doesn't exist yet because `Post = new orion.collection('posts', {...})` in `Posts.js` hasn't run yet. Basically, Meteor's trying to do this:
+
+1. create the `Comments` collection.
+2. define the `Comments` schema, which requires the `Posts` collection to exist.
+3. create the `Posts` collection.
+4. define the `Posts` schema, which will require the `Comments` collection to exist.
+
+So it errors out at `#2`. Well.... this is awkward. 
+
+Ideally, we would like to do things in this order:
+
+1. create the `Posts` and `Comments` collections.
+2. define the `Posts` and `Comments` schemas, which depend on the above collections existing beforehand.
+
+####Correcting File Load Order####
+
+Maybe we should change up our folder structure. I propose:
+
+`/lib/collections/declarations`
+
+  -> `posts.js` and `comments.js` containing code to create both collections
+ 
+`/lib/collections/schemas`
+
+ -> `posts.js` and `comments.js` containing code defining the schemas. The code in the `declarations` folder will run after the code in the `schemas` folder because teh alphabets.
+
+```javascript
+/lib/collections/declarations/comments.js
+
+Comments = new orion.collection('comments', {...});
+
+Meteor.methods({...});
+```
+
+```javascript
+/lib/collections/declarations/posts.js
+
+Posts = new orion.collection('posts', {...});
+
+Posts.allow({...});
+
+Posts.deny({...});
+
+validatePost = function (post) {...};
+
+Meteor.methods({...});
+
+```
+
+```javascript
+/lib/collections/schemas/comments.js
+
+Comments.attachSchema(new SimpleSchema({...}));
+```
+
+```javascript
+/lib/collections/schemas/posts.js
+
+Posts.attachSchema(new SimpleSchema({...}));
+```
+
+Ok, re-arrange your code according to the structure above and afterwards go to the admin backend and click on a comment:
 
 ![enter image description here](https://lh3.googleusercontent.com/4t50qpBophwbQ3q-gYqMaI2NDO6mJDYTlBNTgsc4Qok=s0 "Screenshot from 2015-07-28 03:24:36.png")
 
@@ -1269,7 +1376,7 @@ Will you look at that... OrionJS was able to determine the specific `post` that 
 One `Post` has many `Comments`. Let's go to the schema for `Posts`
 
 ```javascript
-/lib/collections/posts.js
+/lib/collections/schemas/posts.js
 
 Posts.attachSchema(new SimpleSchema({
 
@@ -1365,5 +1472,3 @@ BUT let's talk about the limitations of defining relationships:
 - This is because MongoDB is inherently non-relational and implementing hard-relations like in an SQL DB requires extra code (which isn't currently available in this `orionjs:relationships` package.
 
 - In conclusion, be very careful setting "relationships." You can easily get some marvelous data inconsistencies that will LITERALLY lead to the extinction of all cats.
-
-##Custom Functions (none)##
