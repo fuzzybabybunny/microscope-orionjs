@@ -10,7 +10,7 @@ var handle = query.observeChanges({
     };
 
     if(changedField.postId){
-      
+      var po
     }
 
   }

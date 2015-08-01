@@ -1465,7 +1465,7 @@ Let's see it!
 
 Niiiice. 
 
-###Multiple Relationships###
+###Multiple Relationships (updated 7/31/2015)###
 
 In the case of the `Comments` collection, a single `Comment` has one `Post`, which we defined above, but it also has one  `User` (the comment author). So let's take the comment's `userId` field and create a `hasOne` relationship with a `comment`:
 
