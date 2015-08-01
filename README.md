@@ -33,6 +33,8 @@
         - [Chicken and the Egg](#chicken-and-the-egg)
       - [Correcting File Load Order](#correcting-file-load-order)
     - [hasMany](#hasmany)
+    - [Multiple Relationships](#multiple-relationships)
+      - [Limitations of Defining Relationships](#limitations-of-defining-relationships)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -1463,12 +1465,115 @@ Let's see it!
 
 Niiiice. 
 
-BUT let's talk about the limitations of defining relationships:
+###Multiple Relationships###
+
+In the case of the `Comments` collection, a single `Comment` has one `Post`, which we defined above, but it also has one  `User` (the comment author). So let's take the comment's `userId` field and create a `hasOne` relationship with a `comment`:
+
+```javascript
+/lib/collections/schemas/comments.js
+
+Comments.attachSchema(new SimpleSchema({
+  // here is where we define `a comment has one post`
+  // Each document in Comment has a postId
+  postId: orion.attribute('hasOne', {
+    type: String,
+    // the label is the text that will show up on the Update form's label
+    label: 'Post',
+    // optional is false because you shouldn't have a comment without a post
+    // associated with it
+    optional: false
+  }, {
+    // specify the collection you're making the relationship with
+    collection: Posts,
+    // the key whose value you want to show for each Post document on the Update form
+    titleField: 'title',
+    // dunno
+    publicationName: 'someRandomString',
+  }),
+  // here is where we define `a comment has one user (author)`
+  // Each document in Comment has a userId
+  userId: orion.attribute('hasOne', {
+    type: String,
+    label: 'Author',
+    optional: false
+  }, {
+    collection: Meteor.users,
+    // the key whose value you want to show on the Update form
+    titleField: 'profile.name',
+    publicationName: 'anotherRandomString',
+  }),
+  author: {
+    type: String,
+    optional: false,
+    autoform: {
+      type: 'hidden',
+      label: false
+    }
+  },
+  submitted: {
+    type: Date,
+    optional: false,
+  },
+  body: orion.attribute('summernote', {
+    label: 'Body'
+  }),
+  image: orion.attribute('image', {
+    optional: true,
+    label: 'Comment Image'
+  }),
+}));
+``` 
+
+![enter image description here](https://lh3.googleusercontent.com/3OSrvBsw4ScDzxyRmt5_hE7Nk5-EwDN7O3Iwz-azBxY=s0 "Screenshot from 2015-07-31 18:39:07.png")
+
+Ah, nice. So it looks like we got a drop-down menu that has already been pre-filled with the name of the author. 
+
+Change the `Author` to Tom Coleman and press the `Save` button.
+
+When we change the author with this drop-down menu, the `userId` property in this comment document will be updated to the `userId` of the new author.
+
+But there's a problem because this comment document also has a field called `author`. 
+
+```javascript
+{
+    _id: "DQEwf83xnAusEw2Nt",
+    postId: "CaagbmWYHH9Kp6w2P",
+    userId: "5uhuWaSFdMMWc6G2i", // this ID has been updated and connects to Tom Coleman
+    author: "Sacha Greif", // but this hasn't been changed to "Tom Coleman"
+    submitted: ISODate("2015-08-01T00:00:00Z"),
+    body: "<p><span ... </span></p>"
+}
+```
+
+The `author` property was originally set in the Meteor Method called `commentInsert`, and it was called when this comment was originally created in `/client/templates/comments/comment_submit.js`.
+
+Unfortunately we haven't made any functionality that updates the `author` string when the `userId` value gets changed, which leads us to...
+
+####Limitations of Defining Relationships####
+
+MongoDB is inherently non-relational and implementing hard-relations like in an SQL DB requires extra code (which isn't currently available in the `orionjs:relationships` package). Be very careful setting "relationships." You can easily get some marvelous data inconsistencies that will LITERALLY lead to the extinction of all cats, or at the very least the problem we have above.
+
+For a good read on modeling data, check this out: http://docs.mongodb.org/manual/core/data-model-design/
+
+In addition to what we just mentioned:
 
 - If you remove a comment on the Update Post page, it will NOT automatically remove that post from the associated Update Comment page or on the main website.
 
 - Likewise, if you change the post for a particular comment in the Update Comment page, it will also not automatically reflect in the associated Post page or on the main website.
 
-- This is because MongoDB is inherently non-relational and implementing hard-relations like in an SQL DB requires extra code (which isn't currently available in this `orionjs:relationships` package.
+To change the `author` value when the `userId` changes on a `Comments` document, use this code (kind of hacky):
 
-- In conclusion, be very careful setting "relationships." You can easily get some marvelous data inconsistencies that will LITERALLY lead to the extinction of all cats.
+```javascript
+/server/collections/comments.js
+
+// When there is a change to userId, author gets updated
+var query = Comments.find();
+var handle = query.observeChanges({
+  changed: function(commentId, changedField){
+    if(changedField.userId){
+      var username = Meteor.users.findOne(changedField.userId).profile.name;
+      Comments.update({_id: commentId}, {$set: {author: username}});
+    };
+  }
+});
+```
