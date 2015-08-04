@@ -30,11 +30,12 @@
   - [Dictionary (updated 7/28/2015)](#dictionary-updated-7282015)
   - [Relationships](#relationships)
     - [hasOne](#hasone)
-        - [Chicken and the Egg](#chicken-and-the-egg)
+      - [Chicken and the Egg](#chicken-and-the-egg)
       - [Correcting File Load Order](#correcting-file-load-order)
     - [hasMany](#hasmany)
-    - [Multiple Relationships](#multiple-relationships)
+    - [Multiple Relationships (updated 7/31/2015)](#multiple-relationships-updated-7312015)
       - [Limitations of Defining Relationships](#limitations-of-defining-relationships)
+  - [Setting Roles and Permissions (updated 8/3/2015)](#setting-roles-and-permissions-updated-832015)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -1263,7 +1264,7 @@ Comments.attachSchema(new SimpleSchema({
 }));
 ```
 
-#####Chicken and the Egg####
+####Chicken and the Egg####
 
 By now I hope that things have blown up in the server:
 
@@ -1577,3 +1578,78 @@ var handle = query.observeChanges({
   }
 });
 ```
+
+##Setting Roles and Permissions (updated 8/3/2015)##
+
+As a user with an `admin` role, you are able to do full CRUD on every single collection in Microscope, which includes user accounts, the dictionary, and other configuration variables like the AWS secret key. 
+
+But sometimes you want to give an undervalued and underpaid employee different permissions so that they are still able to log into OrionJS and manage things for you without being able to see or update *everything* in your system. As an evil asshole you want to lock people out of certain things, ya know?
+
+So we're going to want to define another role in addition to the `admin` role.
+
+By default, any new role you create will be locked out of everything, which is why you want to create a role and then set some `allow` rules. Check out the comments for explanations and [here](https://github.com/orionjs/documentation/blob/39cd73a29b112fe8f8b9ac0e56492fd00018b252/docs/accounts/roles.md) for further reading.
+
+```javascript
+/lib/roles/underpaid_worker.js
+
+/*
+ * First you must define the role
+ */
+UnderpaidWorker = new Roles.Role('underpaidWorker');
+
+/**
+ * Allow the actions of the collection
+ */
+UnderpaidWorker.allow('collections.posts.index', true); // Allows the role to see the link in the sidebar
+UnderpaidWorker.allow('collections.posts.insert', false); // Allows the role to insert documents
+UnderpaidWorker.allow('collections.posts.update', true); // Allows the role to update documents
+UnderpaidWorker.allow('collections.posts.remove', true); // Allows the role to remove documents
+UnderpaidWorker.allow('collections.posts.showCreate', false); // Makes the "create" button visible
+UnderpaidWorker.allow('collections.posts.showUpdate', true); // Allows the user to go to the update view
+UnderpaidWorker.allow('collections.posts.showRemove', true); // Shows the delete button on the update view
+
+/**
+ * Set the index filter.
+ * This part is very important and sometimes is forgotten.
+ * Here you must specify which documents the role will be able to see in the index route
+ */
+UnderpaidWorker.helper('collections.posts.indexFilter', {}); // Allows the role to see all documents
+
+/**
+ * Allow the actions of the collection
+ */
+UnderpaidWorker.allow('collections.comments.index', true); // Allows the role to see the link in the sidebar
+UnderpaidWorker.allow('collections.comments.insert', false); // Allows the role to insert documents
+UnderpaidWorker.allow('collections.comments.update', true); // Allows the role to update documents
+UnderpaidWorker.allow('collections.comments.remove', true); // Allows the role to remove documents
+UnderpaidWorker.allow('collections.comments.showCreate', false); // Makes the "create" button visible
+UnderpaidWorker.allow('collections.comments.showUpdate', true); // Allows the user to go to the update view
+UnderpaidWorker.allow('collections.comments.showRemove', true); // Shows the delete button on the update view
+
+/**
+ * Set the index filter.
+ * This part is very important and sometimes is forgotten.
+ * Here you must specify which documents the role will be able to see in the index route
+ */
+UnderpaidWorker.helper('collections.comments.indexFilter', {}); // Allows the role to see all documents
+``` 
+
+We are not allowing this underpaid worker to insert new posts or comments because we want to censor free speech as much as possible.
+
+Great! Now we need to assign a user to this role. I'm way, *way* too lazy to create a new user so let's just use an existing one:
+
+```javascript
+/server/roles.js
+
+var tom = Meteor.users.findOne({username: 'tom'});
+Roles.addUserToRoles( tom._id ,  ["admin"] );
+
+var nameIcantSpel = Meteor.users.findOne({username: 'sacha'});
+Roles.removeUserFromRoles( nameIcantSpel._id, ["admin"] );
+Roles.addUserToRoles( nameIcantSpel._id ,  ["underpaidWorker"] );
+```
+
+Log in as Sexy and poke around (harr-harr):
+
+![enter image description here](https://lh3.googleusercontent.com/6NhTuVXhi9bDOudFXw29Hpl_ZNNQgT184WAR2FqKJ-8=s0 "Screenshot from 2015-08-03 17:12:31.png")
+

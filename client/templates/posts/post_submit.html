@@ -1,5 +1,11 @@
 <template name="postSubmit">
-  <form class="main form page">
+
+{{> quickForm collection="Posts" id="postSubmitForm" type="insert" omitFields="author, comments, commentsCount, userId, submitted, upvoters, votes"}}
+
+<!--   {{#autoForm validation="submit" id="postSubmitForm" collection="Posts"}}
+
+  {{/autoForm}} -->
+<!--   <form class="main form page">
     <div class="form-group {{errorClass 'url'}}">
       <label class="control-label" for="url">URL</label>
       <div class="controls">
@@ -16,6 +22,7 @@
     </div>
     <input type="submit" value="Submit" class="btn btn-primary"/>
   </form>
+  -->
   {{#if dict 'submitPostPage.termsAndConditions'}}
   <div>TERMS AND CONDITIONS</div>
   <div>{{{ dict 'submitPostPage.termsAndConditions' }}}</div>
