@@ -186,7 +186,9 @@ if (Posts.find().count() === 0) {
 
 Shut down Meteor with `Ctrl+C` and do a `meteor reset` and start it back up again with `meteor`.
 
-Now let's log in **as Sacha** and see what happens. Once logged in, click on the `Accounts` link on the left.
+Now let's log in **as Sacha** (Email: `sacha@example.com` and Password: `123456`) and see what happens. Once logged in, click on the `Accounts` link on the left.
+
+**Important:** to log in to the admin panel you need to type in an **email** address not a **username**.
 
 ![enter image description here](https://lh3.googleusercontent.com/J5K9jjcJU_0KKQVfBcqfXiUNrqcto6slnUyOZ6O1Lks=s0 "Screenshot from 2015-07-23 23:41:12.png")
 
