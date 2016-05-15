@@ -294,6 +294,8 @@ Microscope has a `Posts` and `Comments` collection, but both aren't visible yet 
 Let's make them appear.
 
 ```javascript
+/lib/collections/posts.js
+
 // This is what it used to be:
 // Posts = new Mongo.Collection('posts');
 
@@ -335,10 +337,29 @@ Posts.allow({
   remove: function(userId, post) { return ownsDocument(userId, post); },
 });
 
+// Comment this Deny Callback out, or you won't be able to change any
+// other fields than 'url' or 'title' using the admin panel.
+// Posts.deny({
+//   update: function(userId, post, fieldNames) {
+//     // may only edit the following two fields:
+//     return (_.without(fieldNames, 'url', 'title').length > 0);
+//   }
+// });
+
+// For more about permissions see the section titled:
+// "Setting Roles and Permissions (updated 8/3/2015)"
+
+// Keep this Deny Callback in place for validation purposes.
 Posts.deny({
-  update: function(userId, post, fieldNames) {
-    // may only edit the following two fields:
+  update: function(userId, post, fieldNames, modifier) {
+    var errors = validatePost(modifier.$set);
+    return errors.title || errors.url;
+  }
+});
+
+//...
 ```
+
 If you go back to the Microscope home page you'll see that everything appears to have remained normal. Orion collections are just extended Mongo collections. 
 
 Now it looks like we got `Posts` appearing in `OrionJS`.
