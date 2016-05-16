@@ -921,7 +921,7 @@ _.each(Router.routes, function(route){
 });
 ```
 
-Here are some more identifiers: http://orionjs.org/docs/customization#overridetemplates
+More identifiers can be found at: http://docs.orionjs.org/v1.7/customization
 
 So let's use this to subscribe to the `Posts` collection on the `comments.index` template.
 
