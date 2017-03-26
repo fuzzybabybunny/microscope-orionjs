@@ -5,12 +5,12 @@
 
 standard-app-packages
 twbs:bootstrap
-underscore
+underscore@1.0.10
 iron:router@1.0.0-rc.1
 sacha:spin
-accounts-password
+accounts-password@1.3.4
 ian:accounts-ui-bootstrap-3
-audit-argument-checks
+audit-argument-checks@1.0.7
 
 orionjs:core
 fortawesome:fontawesome
@@ -24,3 +24,6 @@ cfs:autoform
 orionjs:filesystem
 orionjs:s3
 orionjs:file-attribute
+standard-minifier-css
+standard-minifier-js
+shell-server
